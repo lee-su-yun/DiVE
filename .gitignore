@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Logs / experiments
+wandb/
+*.log
+logs/
+runs/
+
+# Model checkpoints / large data
+*.pth
+*.pt
+*.ckpt
+*.npy
+*.npz
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
