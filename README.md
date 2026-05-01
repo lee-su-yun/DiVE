@@ -18,6 +18,8 @@ RewardNet은 `belief → 후보별 gain logit` 으로 belief 모델 N번 forward
 - 시뮬레이터 / 데이터 수집 코드는 별도 (이 레포는 학습·리워드 distillation만 다룸)
 
 ```bash
+conda create -n DiVE python=3.10 -y
+conda activate DiVE
 pip install -r requirements.txt
 ```
 
@@ -77,27 +79,27 @@ DiVE/
 원본 시뮬 데이터에 대해 다음을 차례로 실행. `0423` suffix는 그날 수집본 예시.
 
 ```bash
-cd /home/sylee/codes/DiVE/1_preprocessing
-PY=/home/sylee/miniconda3/envs/APOBU/bin/python
+conda activate DiVE
+cd 1_preprocessing
 
 # (사전 단계) fallen_log → fallen_log_revised, tipped_log → tipped_log_revised
 # 스크립트 안 INPUT/OUTPUT 경로를 데이터셋마다 직접 수정 후 실행.
-$PY convert_fallen_log.py
+python convert_fallen_log.py
 
 # 1) OCC 풀어 저장 + pose + visibility (depth-buffer ray casting)
-sudo -E $PY data_preprocessing.py \
+sudo -E python data_preprocessing.py \
     --data-root /data/APOBU/beliefmap_low_occlusion_0423 --workers 32
-sudo -E $PY data_preprocessing.py \
+sudo -E python data_preprocessing.py \
     --data-root /data/APOBU/beliefmap_high_occlusion_0423 --workers 32
 
 # 2) view별 binary visibility (98, 60, 120, 10) packbits 저장
-sudo -E $PY making_ray_casting_per_view.py \
+sudo -E python making_ray_casting_per_view.py \
     --data-roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --workers 32
 
 # 3) UB GT용 scalar push_visibility_all (XOR 기반)
-sudo -E $PY making_push_visibility_per_view_all.py \
+sudo -E python making_push_visibility_per_view_all.py \
     --data-roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --workers 32
@@ -112,11 +114,11 @@ sudo -E $PY making_push_visibility_per_view_all.py \
 ### Stage 2 — Belief 모델 학습
 
 ```bash
-cd /home/sylee/codes/DiVE/2_belief
-PY=/home/sylee/miniconda3/envs/APOBU/bin/python
+conda activate DiVE
+cd 2_belief
 
 # DiVE-V backbone (UA): cumulative-mean GT, init_belief=0.0
-sudo -E $PY train_UA.py \
+sudo -E python train_UA.py \
     --data_roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --save_dir /result/APOBU/U_AB_beliefmap/UA_Kt_v1 \
@@ -126,7 +128,7 @@ sudo -E $PY train_UA.py \
     --teacher_forcing
 
 # DiVE-P backbone (UB): push_visibility_all GT, init_belief=0.0
-sudo -E $PY train_UB.py \
+sudo -E python train_UB.py \
     --data_roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --save_dir /result/APOBU/U_AB_beliefmap/UB_v1 \
@@ -142,11 +144,11 @@ sudo -E $PY train_UB.py \
 학습된 belief 모델로 `(current_map, gains[N후보])` sample 만들기.
 
 ```bash
-cd /home/sylee/codes/DiVE/3_reward_dataset
-PY=/home/sylee/miniconda3/envs/APOBU/bin/python
+conda activate DiVE
+cd 3_reward_dataset
 
 # DiVE-V: 98 cam 후보 / gain = L1 of belief 변화
-$PY UA_reward_generate.py \
+python UA_reward_generate.py \
     --data_roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --ua_checkpoint /result/APOBU/U_AB_beliefmap/UA_Kt_v1/best.pth \
@@ -155,7 +157,7 @@ $PY UA_reward_generate.py \
     --device 0,1,2,3 --chunk 128
 
 # DiVE-P: 29 push 후보 / gain = L1 of belief 변화
-$PY UB_reward_generate.py \
+python UB_reward_generate.py \
     --data_roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
     --ub_checkpoint /result/APOBU/U_AB_beliefmap/UB_v1/best.pth \
@@ -172,11 +174,11 @@ $PY UB_reward_generate.py \
 ### Stage 4 — RewardNet (정책) 학습
 
 ```bash
-cd /home/sylee/codes/DiVE/4_policy
-PY=/home/sylee/miniconda3/envs/APOBU/bin/python
+conda activate DiVE
+cd 4_policy
 
 # DiVE-V policy
-$PY train_reward_UA.py \
+python train_reward_UA.py \
     --reward_roots /data/APOBU/U_AB_beliefmap/ua_Kt_reward_dataset \
     --save_dir /result/APOBU/U_AB_beliefmap/reward_Kt_v1 \
     --wandb_run_name reward_Kt_v1_sigz \
@@ -184,7 +186,7 @@ $PY train_reward_UA.py \
     --device 0,1,2,3
 
 # DiVE-P policy (--data_roots 추가 필요: swept_maps on-the-fly 로드용)
-$PY train_reward_UB.py \
+python train_reward_UB.py \
     --reward_roots /data/APOBU/U_AB_beliefmap/ub_reward_dataset \
     --data_roots /data/APOBU/beliefmap_low_occlusion_0423 \
                  /data/APOBU/beliefmap_high_occlusion_0423 \
