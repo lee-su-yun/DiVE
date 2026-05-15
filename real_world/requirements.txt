@@ -1,0 +1,6 @@
+numpy
+scipy
+opencv-python
+pupil-apriltags
+pyrealsense2
+piper_sdk
