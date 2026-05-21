@@ -149,12 +149,26 @@ class PiperRobot(RobotInterface):
         else:
             gripper_val = int(gripper_val)
 
-        self._piper.MotionCtrl_2(0x01, 0x00, 100, 0x00)
-        self._piper.EndPoseCtrl(x_um, y_um, z_um, rx_mdeg, ry_mdeg, rz_mdeg)
-        self._piper.GripperCtrl(gripper_val, self._gripper_effort, 0x01, 0)
-
+        self._control_end_pose(
+            [x_um, y_um, z_um, rx_mdeg, ry_mdeg, rz_mdeg, gripper_val]
+        )
         if wait:
             time.sleep(self._move_settle_s)
+
+    def step(self, pose6d_raw, gripper):
+        """ABD-style raw-int step. pose6d_raw = [x_um, y_um, z_um,
+        rx_mdeg, ry_mdeg, rz_mdeg]. gripper in [0, 70000]."""
+        end_pose = [int(x) for x in pose6d_raw] + [int(gripper)]
+        self._control_end_pose(end_pose)
+        time.sleep(self._move_settle_s)
+
+    def _control_end_pose(self, end_pose):
+        """Single end-pose + gripper control cycle (matches ABD's piper.py)."""
+        self._piper.MotionCtrl_2(0x01, 0x00, 100, 0x00)
+        self._piper.EndPoseCtrl(end_pose[0], end_pose[1], end_pose[2],
+                                end_pose[3], end_pose[4], end_pose[5])
+        self._piper.GripperCtrl(end_pose[6], self._gripper_effort, 0x01, 0)
+        time.sleep(0.01)
 
     # ---------------- convenience ----------------
 
@@ -180,10 +194,7 @@ class PiperRobot(RobotInterface):
         self._piper.GripperCtrl(self.GRIPPER_CLOSE, 300, 0x01, 0)
 
     def go_to_init_pose(self):
-        p = self._init_pose_raw
-        self._piper.MotionCtrl_2(0x01, 0x00, 100, 0x00)
-        self._piper.EndPoseCtrl(p[0], p[1], p[2], p[3], p[4], p[5])
-        self._piper.GripperCtrl(p[6], self._gripper_effort, 0x01, 0)
+        self._control_end_pose(self._init_pose_raw)
         time.sleep(self._move_settle_s)
         self.open_gripper()
 

@@ -156,10 +156,10 @@ def anchor_shelf_multi_pose(
         T_wt_list.append(T_we_i @ T_ec @ T_ct)
         margins.append(m)
 
-    if len(T_wt_list) < 2:
+    if len(T_wt_list) < 1:
         raise RuntimeError(
-            f"Need at least 2 valid tag detections, got {len(T_wt_list)} "
-            f"(skipped {skipped}). Add more robot poses or improve lighting."
+            f"Need at least 1 valid tag detection, got {len(T_wt_list)} "
+            f"(skipped {skipped}). Improve lighting or reposition the tag."
         )
 
     # Translation: arithmetic mean.  Rotation: SE3 mean via scipy.

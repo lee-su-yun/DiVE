@@ -85,7 +85,7 @@ OUT_NPZ_DEFAULT = "ee_poses.npz"
 #     viewing the AprilTag from a different angle.  At each pose we grab
 #     N_FRAMES_PER_POSE images (averaged internally for image-noise).
 #     Translation-spread between poses is reported as a quality check.
-ANCHOR_N_POSES = 3
+ANCHOR_N_POSES = 1
 ANCHOR_N_FRAMES_PER_POSE = 5
 ANCHOR_TRANSLATION_SPREAD_WARN_M = 0.015   # warn if poses disagree by >1.5 cm
 
@@ -156,27 +156,16 @@ def _average_rgb_for_detection(rgb_list):
 
 
 def collect_captures(args, robot, cam):
-    """Move the wrist camera to N_POSES manually-selected positions and
-    grab tag images at each.  User confirms each pose via stdin.
+    """Capture tag image(s) at the robot's current pose (the init/home pose).
 
-    Returns a list of dicts: [{"rgb": (H,W,3), "T_we": (4,4)}, ...]
+    No manual movement: we trust that the wrist camera at home already sees
+    the AprilTag.  Returns a list of dicts: [{"rgb": (H,W,3), "T_we": (4,4)}].
     """
-    captures = []
-    for i in range(args.anchor_poses):
-        prompt = (f"\n[anchor pose {i+1}/{args.anchor_poses}] "
-                  f"Move the robot so the wrist camera sees the AprilTag "
-                  f"from a *different* angle than before, then press Enter "
-                  f"(or 's' to skip): ")
-        s = input(prompt).strip().lower()
-        if s == "s":
-            print("  skipped")
-            continue
-        T_we_i = robot.get_ee_pose()
-        frames = _avg_frames(cam, args.anchor_frames)
-        rgb = _average_rgb_for_detection(frames)
-        captures.append({"rgb": rgb, "T_we": T_we_i})
-        print(f"  captured (T_we[:3,3] = {T_we_i[:3, 3]})")
-    return captures
+    T_we_i = robot.get_ee_pose()
+    frames = _avg_frames(cam, args.anchor_frames)
+    rgb = _average_rgb_for_detection(frames)
+    print(f"  captured at home pose (T_we[:3,3] = {T_we_i[:3, 3]})")
+    return [{"rgb": rgb, "T_we": T_we_i}]
 
 
 def get_captures_K_robot(args, T_ec):
