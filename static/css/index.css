@@ -273,17 +273,6 @@ video {
   background: hsl(204, 86%, 53%);
 }
 
-.subsection-heading {
-  text-align: center;
-  font-family: 'Google Sans', sans-serif;
-  font-size: 1.05rem !important;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #6a7280 !important;
-  margin-top: 3rem !important;
-  margin-bottom: 1.25rem !important;
-}
 
 .section {
   padding-top: 4rem;
