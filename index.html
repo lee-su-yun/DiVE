@@ -156,7 +156,7 @@
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
         <div class="content has-text-justified">
           <p>
             Active exploration in cluttered environments is essential for reconstructing occluded 3D
@@ -184,6 +184,52 @@
       </div>
     </div>
     <!--/ Abstract. -->
+
+    <!-- Key contributions. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Key Contributions</h2>
+
+        <div class="columns is-multiline contribution-cards">
+          <div class="column is-one-third">
+            <div class="box contribution-card">
+              <span class="contribution-index">01</span>
+              <h3 class="contribution-title">Decomposed visibility</h3>
+              <p>
+                A learned estimator predicts <b>view-resolvable</b> and <b>push-resolvable</b>
+                visibility maps from partial observations. Keeping the two apart exposes which
+                action modality can resolve each region&mdash;structure a unified belief or
+                uncertainty map throws away.
+              </p>
+            </div>
+          </div>
+          <div class="column is-one-third">
+            <div class="box contribution-card">
+              <span class="contribution-index">02</span>
+              <h3 class="contribution-title">Gain signal from the representation</h3>
+              <p>
+                Both maps convert to one <b>expected-visibility-change</b> scale, so the
+                view-versus-push decision follows from the representation itself&mdash;no
+                candidate-wise post-action belief prediction, no hand-tuned balancing constant.
+                Lightweight policies then rank candidates within the chosen mode.
+              </p>
+            </div>
+          </div>
+          <div class="column is-one-third">
+            <div class="box contribution-card">
+              <span class="contribution-index">03</span>
+              <h3 class="contribution-title">Validated in sim and on a real robot</h3>
+              <p>
+                <b>+11.3%</b> occupancy IoU under held-out extreme occlusion and
+                <b>13.2&times;</b> faster per step than a state-of-the-art baseline. Transferred
+                zero-shot to a real shelf, it recovers <b>79.2%</b> of initially occluded objects.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Key contributions. -->
   </div>
 </section>
 
@@ -194,7 +240,7 @@
     <!-- Method. -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Method</h2>
+        <h2 class="title is-3 has-text-centered">Method</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -220,7 +266,7 @@
           </p>
         </div>
 
-        <h3 class="title is-4">Decomposed visibility estimation</h3>
+        <h3 class="title is-4 has-text-centered">Decomposed visibility estimation</h3>
         <div class="content has-text-justified">
           <p>
             <span class="dive">DiVE</span> is a recursive estimator with a shared backbone and two
@@ -248,7 +294,7 @@
           </ul>
         </div>
 
-        <h3 class="title is-4">Mode selection on a common gain scale</h3>
+        <h3 class="title is-4 has-text-centered">Mode selection on a common gain scale</h3>
         <div class="content has-text-justified">
           <p>
             The two maps carry different units, so they cannot be compared directly. Using
@@ -277,7 +323,7 @@
     <!-- Results. -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Results</h2>
+        <h2 class="title is-3 has-text-centered">Results</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -301,7 +347,7 @@
           </p>
         </div>
 
-        <h3 class="title is-4">Where the gain comes from</h3>
+        <h3 class="title is-4 has-text-centered">Where the gain comes from</h3>
         <div class="content has-text-centered">
           <img src="./static/images/analysis.png"
                alt="Action-selection analysis, robustness, and extensibility."/>
@@ -325,17 +371,6 @@
           </p>
         </div>
 
-        <div class="content has-text-centered">
-          <img src="./static/images/candidate.png"
-               alt="Candidate-level action-selection comparison." width="68%"/>
-          <p class="caption has-text-justified">
-            <b>Candidate-level comparison at one decision step.</b> Left: the mode-level expected
-            gain favors pushing, so <span class="dive">DiVE</span> ranks the push candidates and
-            executes the selected push. Right: View-Only is forced to take another viewpoint despite
-            the larger push-resolvable gain. The resulting belief maps show that the push resolves
-            regions an additional view cannot.
-          </p>
-        </div>
       </div>
     </div>
     <!--/ Results. -->
@@ -343,7 +378,7 @@
     <!-- Real world. -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Real-world experiments</h2>
+        <h2 class="title is-3 has-text-centered">Real-world experiments</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -406,43 +441,13 @@
     </div>
     <!--/ Real world. -->
 
-    <!-- Qualitative. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Qualitative rollout</h2>
-
-        <div class="content has-text-centered">
-          <img src="./static/images/rollout.png"
-               alt="Qualitative internal rollout of DiVE in simulation." width="60%"/>
-          <p class="caption has-text-justified">
-            <b>Internal rollout in simulation.</b> For view steps we show the RGB observation, the
-            top-down projections of $\phi_{\text{view}}$ and $\phi_{\text{push}}$, and the occupancy
-            belief. For push steps we show the swept map of the selected push. View actions refine
-            visible and view-resolvable regions; push actions change the scene and update the belief
-            through the swept region.
-          </p>
-        </div>
-
-        <h3 class="title is-4">Occlusion regimes</h3>
-        <div class="content has-text-centered">
-          <img src="./static/images/scenes.png" alt="Example simulation scenes."/>
-          <p class="caption has-text-justified">
-            Example simulation scenes. Extreme-occlusion scenes&mdash;held out from
-            training&mdash;pack objects densely enough that several are fully hidden from <i>all</i>
-            candidate viewpoints before interaction.
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Qualitative. -->
-
   </div>
 </section>
 
 
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
+    <h2 class="title has-text-centered">BibTeX</h2>
     <pre><code>@inproceedings{lee2026dive,
   title     = {Learning Decomposed Visibility for Efficient Active Exploration of Cluttered Scenes},
   author    = {Lee, Suyun and Choi, Minsoo and Gong, Jihwan and Nam, Unghui and Bae, Minji and Shim, Byonghyo},
