@@ -187,3 +187,8 @@ p.caption {
 .table th {
   font-family: 'Google Sans', sans-serif;
 }
+
+video {
+  max-width: 100%;
+  border-radius: 6px;
+}

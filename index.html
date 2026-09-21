@@ -93,6 +93,16 @@
                   <span>arXiv (coming soon)</span>
                 </a>
               </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="#demo-video"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-play"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
               <!-- Code Link. -->
               <span class="link-block">
                 <a href="https://github.com/lee-su-yun/DiVE"
@@ -121,6 +131,31 @@
         <span class="dive">DiVE</span> decides <b>whether to look or to push</b>, and reveals objects
         that no viewpoint alone can uncover.
       </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small" id="demo-video">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Demo video</h2>
+      <div class="content has-text-centered">
+        <video id="demo-player"
+               controls
+               preload="metadata"
+               playsinline
+               poster="./static/images/demo_poster.jpg"
+               width="100%">
+          <source src="./static/videos/dive_demo.mp4" type="video/mp4">
+        </video>
+        <p class="caption has-text-justified">
+          2:36 &mdash; the view-vs-push distinction, the full pipeline
+          ($f_{\text{DiVE}}$ &rarr; mode selection &rarr; mode-specific policy &rarr;
+          belief update), a complete real-robot episode with the belief map updating step by step,
+          and the headline numbers.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -324,7 +359,8 @@
           <p>
             We transfer the policy <b>zero-shot</b> to a Piper AgileX arm with an
             end-effector-mounted RGB-D camera, on 10 cluttered shelf scenes built from physical
-            YCB-category objects, with a 20-action budget.
+            YCB-category objects, with a 20-action budget. A full real episode, step by step, is in
+            the <a href="#demo-video">demo video</a>.
           </p>
         </div>
 
