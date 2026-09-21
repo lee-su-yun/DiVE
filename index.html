@@ -124,11 +124,12 @@
 </section>
 
 
-<section class="hero is-light is-small" id="demo-video">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Demo video</h2>
-      <div class="content has-text-centered">
+<section class="section section-tint" id="demo-video">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 section-heading">Demo video</h2>
+        <div class="content has-text-centered">
         <video id="demo-player"
                controls
                preload="metadata"
@@ -137,18 +138,19 @@
                width="100%">
           <source src="./static/videos/dive_demo.mp4" type="video/mp4">
         </video>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 
+<!-- Abstract. -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <h2 class="title is-3 section-heading">Abstract</h2>
         <div class="content has-text-justified">
           <p>
             Active exploration in cluttered environments is essential for reconstructing occluded 3D
@@ -175,12 +177,17 @@
         </div>
       </div>
     </div>
-    <!--/ Abstract. -->
+  </div>
+</section>
+<!--/ Abstract. -->
 
-    <!-- Key contributions. -->
+
+<!-- Key contributions. -->
+<section class="section section-tint">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">Key Contributions</h2>
+        <h2 class="title is-3 section-heading">Key Contributions</h2>
 
         <div class="contribution-cards">
           <div class="box contribution-card">
@@ -226,18 +233,17 @@
         </div>
       </div>
     </div>
-    <!--/ Key contributions. -->
   </div>
 </section>
+<!--/ Key contributions. -->
 
 
-<section class="section" style="padding-top: 0;">
+<!-- Method. -->
+<section class="section">
   <div class="container is-max-desktop">
-
-    <!-- Method. -->
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">Method</h2>
+        <h2 class="title is-3 section-heading">Method</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -263,7 +269,7 @@
           </p>
         </div>
 
-        <h3 class="title is-4 has-text-centered">Decomposed visibility estimation</h3>
+        <h3 class="title is-4 subsection-heading">Decomposed visibility estimation</h3>
         <div class="content has-text-justified">
           <p>
             <span class="dive">DiVE</span> is a recursive estimator with a shared backbone and two
@@ -291,7 +297,7 @@
           </ul>
         </div>
 
-        <h3 class="title is-4 has-text-centered">Mode and Action Selection</h3>
+        <h3 class="title is-4 subsection-heading">Mode and Action Selection</h3>
         <div class="content has-text-justified">
           <p>
             The two maps carry different units, so they cannot be compared directly. Using
@@ -315,12 +321,17 @@
         </div>
       </div>
     </div>
-    <!--/ Method. -->
+  </div>
+</section>
+<!--/ Method. -->
 
-    <!-- Results. -->
+
+<!-- Results. -->
+<section class="section section-tint">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">Results</h2>
+        <h2 class="title is-3 section-heading">Results</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -344,7 +355,7 @@
           </p>
         </div>
 
-        <h3 class="title is-4 has-text-centered">Where the gain comes from</h3>
+        <h3 class="title is-4 subsection-heading">Where the gain comes from</h3>
         <div class="content has-text-centered">
           <img src="./static/images/analysis.png"
                alt="Action-selection analysis, robustness, and extensibility."/>
@@ -361,12 +372,17 @@
 
       </div>
     </div>
-    <!--/ Results. -->
+  </div>
+</section>
+<!--/ Results. -->
 
-    <!-- Real world. -->
+
+<!-- Real world. -->
+<section class="section">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3 has-text-centered">Real-world experiments</h2>
+        <h2 class="title is-3 section-heading">Real-world experiments</h2>
 
         <div class="content has-text-justified">
           <p>
@@ -427,15 +443,14 @@
         </div>
       </div>
     </div>
-    <!--/ Real world. -->
-
   </div>
 </section>
+<!--/ Real world. -->
 
 
-<section class="section" id="BibTeX">
+<section class="section section-tint" id="BibTeX">
   <div class="container is-max-desktop content">
-    <h2 class="title has-text-centered">BibTeX</h2>
+    <h2 class="title is-3 section-heading">BibTeX</h2>
     <pre><code>@inproceedings{lee2026dive,
   title     = {Learning Decomposed Visibility for Efficient Active Exploration of Cluttered Scenes},
   author    = {Lee, Suyun and Choi, Minsoo and Gong, Jihwan and Nam, Unghui and Bae, Minji and Shim, Byonghyo},

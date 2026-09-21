@@ -248,3 +248,54 @@ video {
     gap: 0.75rem;
   }
 }
+
+/* --- Section rhythm and heading hierarchy --- */
+.section-tint {
+  background-color: #f6f7f9;
+}
+
+.section-heading {
+  text-align: center;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 2.3rem !important;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 2.25rem !important;
+}
+
+.section-heading::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin: 0.8rem auto 0 auto;
+  border-radius: 2px;
+  background: hsl(204, 86%, 53%);
+}
+
+.subsection-heading {
+  text-align: center;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 1.05rem !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6a7280 !important;
+  margin-top: 3rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.contribution-card {
+  background-color: #fff;
+}
+
+#BibTeX pre {
+  background-color: #fff;
+  border: 1px solid #e6e8ec;
+  border-radius: 8px;
+}
