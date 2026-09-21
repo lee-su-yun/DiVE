@@ -83,25 +83,23 @@
                   <span>Paper (coming soon)</span>
                 </a>
               </span>
-              <!-- Video Link. -->
-              <span class="link-block">
-                <a href="#demo-video"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-play"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href="https://github.com/lee-su-yun/DiVE"
-                   class="external-link button is-normal is-rounded is-dark">
+                <a class="external-link button is-normal is-rounded is-dark is-static">
                   <span class="icon">
                       <i class="fab fa-github"></i>
                   </span>
                   <span>Code (coming soon)</span>
-                  </a>
+                </a>
+              </span>
+              <!-- Data Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark is-static">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data (coming soon)</span>
+                </a>
               </span>
             </div>
 
@@ -139,12 +137,6 @@
                width="100%">
           <source src="./static/videos/dive_demo.mp4" type="video/mp4">
         </video>
-        <p class="caption has-text-justified">
-          2:36 &mdash; the view-vs-push distinction, the full pipeline
-          ($f_{\text{DiVE}}$ &rarr; mode selection &rarr; mode-specific policy &rarr;
-          belief update), a complete real-robot episode with the belief map updating step by step,
-          and the headline numbers.
-        </p>
       </div>
     </div>
   </div>
@@ -190,39 +182,44 @@
       <div class="column is-full-width">
         <h2 class="title is-3 has-text-centered">Key Contributions</h2>
 
-        <div class="columns is-multiline contribution-cards">
-          <div class="column is-one-third">
-            <div class="box contribution-card">
-              <span class="contribution-index">01</span>
-              <h3 class="contribution-title">Decomposed visibility</h3>
+        <div class="contribution-cards">
+          <div class="box contribution-card">
+            <span class="contribution-index">01</span>
+            <div class="contribution-body">
+              <h3 class="contribution-title">Decomposed Visibility Estimator</h3>
               <p>
-                A learned estimator predicts <b>view-resolvable</b> and <b>push-resolvable</b>
-                visibility maps from partial observations. Keeping the two apart exposes which
-                action modality can resolve each region&mdash;structure a unified belief or
-                uncertainty map throws away.
+                Our main methodological contribution is the <b>Decomposed Visibility Estimator</b>
+                (<span class="dive">DiVE</span>), a learned module that predicts view-resolvable and
+                push-resolvable visibility maps from partial observations. By preserving which action
+                modality can resolve each region, the representation exposes action-relevant
+                structure that is absent from a unified belief or uncertainty map.
               </p>
             </div>
           </div>
-          <div class="column is-one-third">
-            <div class="box contribution-card">
-              <span class="contribution-index">02</span>
-              <h3 class="contribution-title">Gain signal from the representation</h3>
+          <div class="box contribution-card">
+            <span class="contribution-index">02</span>
+            <div class="contribution-body">
+              <h3 class="contribution-title">Efficient planning from the representation</h3>
               <p>
-                Both maps convert to one <b>expected-visibility-change</b> scale, so the
-                view-versus-push decision follows from the representation itself&mdash;no
-                candidate-wise post-action belief prediction, no hand-tuned balancing constant.
-                Lightweight policies then rank candidates within the chosen mode.
+                We show how the decomposed maps support efficient planning: modality-specific
+                predictions are converted to a common expected-visibility-change scale for mode
+                selection, and are used by lightweight policies for within-mode candidate ranking.
+                Unlike prior hierarchical view-and-push planners, the view-versus-push signal follows
+                from the proposed representation rather than candidate-wise post-action belief
+                prediction or a hand-tuned balancing constant.
               </p>
             </div>
           </div>
-          <div class="column is-one-third">
-            <div class="box contribution-card">
-              <span class="contribution-index">03</span>
-              <h3 class="contribution-title">Validated in sim and on a real robot</h3>
+          <div class="box contribution-card">
+            <span class="contribution-index">03</span>
+            <div class="contribution-body">
+              <h3 class="contribution-title">Validated in simulation and the real world</h3>
               <p>
-                <b>+11.3%</b> occupancy IoU under held-out extreme occlusion and
-                <b>13.2&times;</b> faster per step than a state-of-the-art baseline. Transferred
-                zero-shot to a real shelf, it recovers <b>79.2%</b> of initially occluded objects.
+                We validate our framework in both simulation and real-world cluttered shelf scenes.
+                In simulation, <span class="dive">DiVE</span> improves occupancy IoU by
+                <b>11.3%</b> under extreme occlusion and runs <b>13.2&times; faster</b> per step than
+                a state-of-the-art baseline. On a real robot, <span class="dive">DiVE</span>
+                transfers zero-shot and recovers <b>79.2%</b> of initially occluded objects.
               </p>
             </div>
           </div>
@@ -294,7 +291,7 @@
           </ul>
         </div>
 
-        <h3 class="title is-4 has-text-centered">Mode selection on a common gain scale</h3>
+        <h3 class="title is-4 has-text-centered">Mode and Action Selection</h3>
         <div class="content has-text-justified">
           <p>
             The two maps carry different units, so they cannot be compared directly. Using
@@ -359,15 +356,6 @@
             IoU by at most 1.75 points. (c) Fixed push schedules and longer warm-ups both hurt,
             supporting learned gain-based mode selection. (d) The same recipe extends to a
             grasp-resolvable head (representation-level feasibility only).
-          </p>
-        </div>
-
-        <div class="content has-text-justified">
-          <p>
-            Decomposition also matters for <i>candidate ranking</i>: scoring pushes by their swept
-            volume over $\phi_{\text{push}}$ correlates with the true push gain at <b>0.436</b>,
-            versus <b>0.204</b> for a unified visibility map (76,721 policy-training samples).
-            Mixing view- and push-resolvable signals dilutes the push-specific cue.
           </p>
         </div>
 
