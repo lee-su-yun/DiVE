@@ -17,9 +17,10 @@ python -m http.server 8000
 
 - `index.html` — the whole page
 - `static/images/` — figures exported from the paper PDF
-- `static/DiVE_paper.pdf` — camera-ready paper
+- `static/videos/dive_demo.mp4` — demo video
 - `static/css`, `static/js` — Bulma + template assets
 
 ## Deploy
 
-Pushed to a GitHub repository with GitHub Pages enabled (Settings → Pages → Branch: `main`, `/root`).
+Published from the `gh-pages` branch of [lee-su-yun/DiVE](https://github.com/lee-su-yun/DiVE)
+(Settings → Pages → Branch: `gh-pages`, `/root`) at https://lee-su-yun.github.io/DiVE/.
