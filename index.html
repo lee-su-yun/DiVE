@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="DiVE (Decomposed Visibility Estimator) predicts view-resolvable and push-resolvable visibility maps for efficient active exploration of cluttered scenes.">
+  <meta name="keywords" content="DiVE, Active exploration, Interactive perception, View-and-push planning, Cluttered scene reconstruction, CoRL 2026">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiVE: Learning Decomposed Visibility for Efficient Active Exploration of Cluttered Scenes</title>
+
+  <meta property="og:title" content="DiVE: Learning Decomposed Visibility for Efficient Active Exploration of Cluttered Scenes"/>
+  <meta property="og:description" content="CoRL 2026. A learned model that predicts view-resolvable and push-resolvable visibility maps, enabling hierarchical view-and-push planning."/>
+  <meta property="og:image" content="./static/images/teaser.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script>
+    window.MathJax = {
+      tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+      svg: {fontCache: 'global'}
+    };
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            <span class="dive">DiVE</span>: Learning Decomposed Visibility for Efficient Active
+            Exploration of Cluttered Scenes
+          </h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Suyun Lee<sup>*</sup>,</span>
+            <span class="author-block">Minsoo Choi<sup>*</sup>,</span>
+            <span class="author-block">Jihwan Gong,</span>
+            <span class="author-block">Unghui Nam,</span>
+            <span class="author-block">Minji Bae,</span>
+            <span class="author-block">Byonghyo Shim</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Seoul National University</span>
+          </div>
+          <div class="is-size-6 publication-authors">
+            <span class="author-block"><sup>*</sup>Equal contribution</span>
+          </div>
+
+          <div class="is-size-5 publication-venue" style="margin: 0.75rem auto 0 auto;">
+            Conference on Robot Learning (CoRL) 2026
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="./static/DiVE_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- arXiv Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark is-static">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv (coming soon)</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/lee-su-yun/DiVE"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (coming soon)</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./static/images/teaser.png" alt="DiVE example rollout on a real shelf."/>
+      <h2 class="subtitle has-text-centered">
+        <span class="dive">DiVE</span> decides <b>whether to look or to push</b>, and reveals objects
+        that no viewpoint alone can uncover.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Active exploration in cluttered environments is essential for reconstructing occluded 3D
+            scenes, requiring both observation and physical interaction. Existing methods rely on
+            belief maps that indicate <i>where</i> the scene is unresolved but not <i>how</i> each
+            region can be resolved, estimating the gains of viewing and pushing only through costly
+            lookahead or hand-tuned heuristics.
+          </p>
+          <p>
+            We propose <span class="dive">DiVE</span> (Decomposed Visibility Estimator), a learned
+            model that predicts two decomposed visibility maps: a <b>view-resolvable</b> map and a
+            <b>push-resolvable</b> map, making explicit what each action mode can reveal. By
+            converting these modality-specific predictions into a common visibility-gain scale,
+            <span class="dive">DiVE</span> supports a hierarchical decision structure: the robot
+            first chooses between observation and interaction, then selects the specific action
+            through a mode-specific policy.
+          </p>
+          <p>
+            In simulation, <span class="dive">DiVE</span> improves occupancy IoU by <b>11.3%</b> on
+            extreme-occlusion shelf scenes and runs <b>13.2&times; faster</b> per step
+            (19.8&times; faster in planning) than a state-of-the-art baseline. Deployed zero-shot on
+            a real robot, it recovers <b>79.2%</b> of initially occluded objects.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+
+    <!-- Method. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            A unified belief or uncertainty map says only that a region is unresolved. It does not
+            say whether the robot should <i>move the camera</i> or <i>change the scene</i>. We
+            therefore center the representation on <b>visibility</b>&mdash;the quantity that actions
+            directly change&mdash;and decompose it by action modality.
+          </p>
+        </div>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/overview.png"
+               alt="Overview of the DiVE framework."/>
+          <p class="caption has-text-justified">
+            <b>Overview of the proposed framework.</b> (a) <span class="dive">DiVE</span>
+            ($f_{\text{DiVE}}$) predicts view-resolvable ($\phi_{\text{view}}$) and push-resolvable
+            ($\phi_{\text{push}}$) visibility maps from the current partial observation. (b) The maps
+            are converted to a common scale of expected visibility change to select the action mode.
+            (c) The corresponding policy ($\pi_{\text{view}}$ or $\pi_{\text{push}}$) selects the
+            best viewpoint or push. (d) The belief map estimator ($f_{\text{scene}}$) fuses the new
+            observation and, after a push, the swept region to update the global scene belief
+            $\phi_{\text{scene}}$.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Decomposed visibility estimation</h3>
+        <div class="content has-text-justified">
+          <p>
+            <span class="dive">DiVE</span> is a recursive estimator with a shared backbone and two
+            heads, updating both maps from the current observation and the previous maps:
+          </p>
+          <p class="has-text-centered">
+            $(\phi_{\text{view},t},\, \phi_{\text{push},t}) = f_{\text{DiVE}}(\phi_{\text{view},t-1},\,
+            \phi_{\text{push},t-1},\, o_t)$
+          </p>
+          <p>
+            The two heads share an architecture but are supervised with different targets, reflecting
+            the different mechanisms by which viewpoint motion and pushing change visibility.
+          </p>
+          <ul>
+            <li>
+              <b>View-resolvable visibility</b> $\phi_{\text{view}}$ is a visibility
+              <i>state</i>: the empirical frequency with which each voxel is visible across the
+              viewpoints visited since the most recent push.
+            </li>
+            <li>
+              <b>Push-resolvable visibility</b> $\phi_{\text{push}}$ is a visibility
+              <i>change</i>: the expected absolute change in marginal visibility (over the candidate
+              viewpoint set) induced by a randomly sampled candidate push.
+            </li>
+          </ul>
+        </div>
+
+        <h3 class="title is-4">Mode selection on a common gain scale</h3>
+        <div class="content has-text-justified">
+          <p>
+            The two maps carry different units, so they cannot be compared directly. Using
+            $\phi_{\text{view},t}(v)$ as a plug-in Bernoulli mean for the visibility of voxel $v$
+            from one additional viewpoint, the expected absolute update of the running average has a
+            closed form, which puts both modes on the same
+            <i>expected per-voxel visibility change</i> scale:
+          </p>
+          <p class="has-text-centered">
+            $\mathcal{G}_{\text{view}} = \sum_{v \in \mathcal{V}}
+            \dfrac{2\,\phi_{\text{view},t}(v)\,(1 - \phi_{\text{view},t}(v))}{|\mathcal{K}_t| + 1}
+            \qquad
+            \mathcal{G}_{\text{push}} = \sum_{v \in \mathcal{V}} \phi_{\text{push},t}(v)$
+          </p>
+          <p>
+            The planner picks the mode with the larger expected gain, then ranks candidates
+            <i>within</i> that mode with a lightweight policy ($\pi_{\text{view}}$ or
+            $\pi_{\text{push}}$) in a single forward pass&mdash;no candidate-wise post-action belief
+            prediction, and no hand-tuned cross-mode threshold.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+
+    <!-- Results. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            We evaluate in Isaac Sim (UR5 in front of a cluttered shelf with YCB objects) against
+            <b>CNABU</b> [Marques et al., RSS 2025], a <b>View-Only</b> ablation, and
+            <b>Random</b>. Models are trained only on low- and high-occlusion scenes;
+            <b>extreme occlusion is held out</b>.
+          </p>
+        </div>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/results.png"
+               alt="Main results, generalization, and efficiency."/>
+          <p class="caption has-text-justified">
+            <b>Main results, generalization, and efficiency.</b> (a) Reconstruction quality vs.
+            action budget. As occlusion increases, View-Only and Random plateau early while
+            push-enabled methods keep improving. (b) Zero-shot generalization to out-of-distribution
+            object shapes, and unseen categories with lightweight adaptation of the reconstruction
+            module only. (c) Per-step compute over 100 episodes: <b>19.8&times;</b> faster planning
+            and <b>13.2&times;</b> faster total step time than CNABU.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Where the gain comes from</h3>
+        <div class="content has-text-centered">
+          <img src="./static/images/analysis.png"
+               alt="Action-selection analysis, robustness, and extensibility."/>
+          <p class="caption has-text-justified">
+            <b>Action-selection analysis, robustness, and extensibility.</b> (a) With the belief
+            estimator fixed and only the selection strategy changed, decomposed-visibility selection
+            beats belief-gain selection&mdash;the gap reflects action-selection quality, not the
+            reconstruction module. (b) Varying one action-space parameter at a time changes final
+            IoU by at most 1.75 points. (c) Fixed push schedules and longer warm-ups both hurt,
+            supporting learned gain-based mode selection. (d) The same recipe extends to a
+            grasp-resolvable head (representation-level feasibility only).
+          </p>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            Decomposition also matters for <i>candidate ranking</i>: scoring pushes by their swept
+            volume over $\phi_{\text{push}}$ correlates with the true push gain at <b>0.436</b>,
+            versus <b>0.204</b> for a unified visibility map (76,721 policy-training samples).
+            Mixing view- and push-resolvable signals dilutes the push-specific cue.
+          </p>
+        </div>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/candidate.png"
+               alt="Candidate-level action-selection comparison." width="68%"/>
+          <p class="caption has-text-justified">
+            <b>Candidate-level comparison at one decision step.</b> Left: the mode-level expected
+            gain favors pushing, so <span class="dive">DiVE</span> ranks the push candidates and
+            executes the selected push. Right: View-Only is forced to take another viewpoint despite
+            the larger push-resolvable gain. The resulting belief maps show that the push resolves
+            regions an additional view cannot.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Results. -->
+
+    <!-- Real world. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Real-world experiments</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            We transfer the policy <b>zero-shot</b> to a Piper AgileX arm with an
+            end-effector-mounted RGB-D camera, on 10 cluttered shelf scenes built from physical
+            YCB-category objects, with a 20-action budget.
+          </p>
+        </div>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/realsetup.png" alt="Real-world setup and objects."/>
+          <p class="caption has-text-justified">
+            <b>Real-world setup.</b> (a) Robot and shelf. (b) Physical objects corresponding to the
+            YCB categories used in simulation, differing in shape, material, texture, and sensing
+            noise.
+          </p>
+        </div>
+
+        <div class="content">
+          <table class="table is-fullwidth is-hoverable has-text-centered">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Correctly found &uarr;</th>
+                <th>Misclassified but found</th>
+                <th>Missed &darr;</th>
+                <th>Occluded-object discovery &uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>View-Only</td>
+                <td>54.3 &plusmn; 10.2</td>
+                <td>0.0 &plusmn; 0.0</td>
+                <td>45.7 &plusmn; 10.2</td>
+                <td>54.2 &plusmn; 35.4</td>
+              </tr>
+              <tr>
+                <td><b>DiVE (ours)</b></td>
+                <td><b>65.5 &plusmn; 14.2</b></td>
+                <td>5.4 &plusmn; 6.9</td>
+                <td><b>29.1 &plusmn; 15.4</b></td>
+                <td><b>79.2 &plusmn; 23.3</b></td>
+              </tr>
+              <tr>
+                <td>&Delta;</td>
+                <td>+11.2</td>
+                <td>+5.4</td>
+                <td>&minus;16.6</td>
+                <td>+25.0</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="caption">
+            Zero-shot real-world results over 10 scenes. All values are percentages.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Real world. -->
+
+    <!-- Qualitative. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Qualitative rollout</h2>
+
+        <div class="content has-text-centered">
+          <img src="./static/images/rollout.png"
+               alt="Qualitative internal rollout of DiVE in simulation." width="60%"/>
+          <p class="caption has-text-justified">
+            <b>Internal rollout in simulation.</b> For view steps we show the RGB observation, the
+            top-down projections of $\phi_{\text{view}}$ and $\phi_{\text{push}}$, and the occupancy
+            belief. For push steps we show the swept map of the selected push. View actions refine
+            visible and view-resolvable regions; push actions change the scene and update the belief
+            through the swept region.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Occlusion regimes</h3>
+        <div class="content has-text-centered">
+          <img src="./static/images/scenes.png" alt="Example simulation scenes."/>
+          <p class="caption has-text-justified">
+            Example simulation scenes. Extreme-occlusion scenes&mdash;held out from
+            training&mdash;pack objects densely enough that several are fully hidden from <i>all</i>
+            candidate viewpoints before interaction.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Qualitative. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@inproceedings{lee2026dive,
+  title     = {Learning Decomposed Visibility for Efficient Active Exploration of Cluttered Scenes},
+  author    = {Lee, Suyun and Choi, Minsoo and Gong, Jihwan and Nam, Unghui and Bae, Minji and Shim, Byonghyo},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  year      = {2026},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="./static/DiVE_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/lee-su-yun" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This website is built on the
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> project page template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
