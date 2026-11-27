@@ -177,11 +177,21 @@ python policy/push/train_reward_UB.py \
 
 ### 5. Belief map estimator
 
-`belief_map/train_finetune.py` finetunes the released `estimator.pt` on new data. The from-scratch
-trainer is being prepared for release.
+Train from scratch on the low- and high-occlusion scenes (the released `estimator.pt` was trained
+this way, on 4 GPUs):
 
 ```bash
 export PYTHONPATH=$PWD
+torchrun --nproc_per_node=4 --standalone -m belief_map.train \
+    --data_dirs <low data_root> <high data_root> \
+    --out_dir runs --out_name estimator.pt \
+    --batch 32 --num_workers 8 --n_sem 15 --w_sem 0.1
+```
+
+It reads the archives as extracted from the Hub; step 1 is not needed for it. To add object
+classes, `belief_map/train_finetune.py` continues from a checkpoint instead:
+
+```bash
 python -m belief_map.train_finetune \
     --init_from checkpoints/belief_map_estimator/estimator.pt \
     --data_dirs <data_root> [<data_root> ...] \

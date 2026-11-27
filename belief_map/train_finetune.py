@@ -4,10 +4,9 @@ belief_map/train_finetune.py
 **FINETUNE** script for BeliefUpdateNetRecursive, the recursive semantic belief
 estimator (`f_scene`). It starts from a pre-trained recursive checkpoint
 (n_sem=15, with slots 12-14 already reserved) and finetunes it on a dataset that
-contains new object classes. The from-scratch trainer is not part of this
-release yet.
+contains new object classes.
 
-How it differs from the from-scratch trainer:
+How it differs from the from-scratch trainer (`belief_map/train.py`):
   - `--init_from <ckpt>` is required — the pretrained state_dict is loaded
     partially, before the model is wrapped for DDP. When the head shape matches
     (n_sem=15 unchanged) every tensor is copied directly.
