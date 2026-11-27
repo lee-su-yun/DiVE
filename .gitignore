@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# run artifacts
+wandb/
+runs/
+experiments/
+checkpoints/
+*.log
+
+# data
+data/
+datasets/
+*.npz
+*.npy
+!inference/reference_results/*.npz
+
+# editor / OS
+.DS_Store
+.vscode/
+.idea/
+
+# upload progress
+scripts/upload_state.json

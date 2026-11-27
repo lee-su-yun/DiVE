@@ -1,0 +1,14 @@
+# Training and preprocessing (steps 1-4).
+# The evaluation in inference/ additionally needs Isaac Lab / Isaac Sim 5.1,
+# which is installed separately -- see README.
+torch>=2.1
+numpy
+scipy
+opencv-python
+tqdm
+wandb
+matplotlib
+
+# Optional, used by the evaluation stack:
+#   trimesh   -- YCB mesh voxelization cache (inference/sim/ycb_meshes.py)
+#   cupy      -- GPU path in inference/sim/push_provider.py (falls back to numpy)
