@@ -333,11 +333,11 @@ class MultiPushDataset(Dataset):
                 sem_hwd  = vmeta['sem_occ'][v_idx].astype(np.float32)
                 sems [t] = sem_hwd.transpose(1, 0, 2)
             else:
-                # On-the-fly back-projection (--no_precomputed_sem). `recover_env_origin`
-                # is not part of this release — the external data-collection package
-                # that defines it has to be on PYTHONPATH for this path to work.
+                # On-the-fly back-projection (--no_precomputed_sem). Needs the per-view
+                # depth and 2D semantics, which the Hub archives leave out, so this
+                # path only works on data you collected yourself.
                 from inference.utils.voxel_projection import depth_semantic_to_voxel
-                from cnabu_reproduce.data.precompute_apobu import recover_env_origin  # external
+                from belief_map.env_origin import recover_env_origin
                 depth_v = vmeta['depth'][v_idx].astype(np.float32) / 1000.0
                 depth_v[depth_v == 0.0] = np.nan
                 sem_2d  = vmeta['sem_2d'][v_idx]
